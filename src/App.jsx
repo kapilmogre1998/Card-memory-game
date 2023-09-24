@@ -27,15 +27,16 @@ const App = () => {
     const [first, second] = openCards;
     if (cardList[first].img !== cardList[second].img) {
       setTimeout(() => {
-        setDisableDeck(false);
-        setOpenCards([]);
         setClearedCards(clearedCards?.filter((id) => {
           if (!openCards?.includes(id)) return id;
         }))
+        setOpenCards([]);
+        setDisableDeck(false);
       }, 800)
     } else {
+      setDisableDeck(false);
       setOpenCards([]);
-      if(clearedCards?.length === cardList?.length){
+      if (clearedCards?.length === cardList?.length) {
         setTimeout(() => {
           setShowConfetti(true);
         }, 300)
@@ -44,13 +45,9 @@ const App = () => {
   }
 
   const handleClickOnCard = (index) => {
-    if (openCards?.includes(index) || clearedCards?.includes(index)) return;
-    if (openCards?.length <= 1) {
-      setOpenCards(prev => ([...prev, index]));
-      setClearedCards(prev => ([...prev, index]))
-    } else {
-      setOpenCards([]);
-    }
+    if (openCards?.includes(index) || clearedCards?.includes(index) || disableDeck) return;
+    setOpenCards(prev => ([...prev, index]));
+    setClearedCards(prev => ([...prev, index]));
   }
 
   useEffect(() => {
@@ -67,13 +64,13 @@ const App = () => {
 
   return (
     <div className='card-container' >
-      <div style={{ position: 'absolute', top: '50%',left: '50%', transform: 'translate(-50%, -50%)'  }} >
-        { true && <ConfettiExplosion { ...{force: 0.5,duration: 3000,particleCount: 300,width: 2000}} />}
+      <div className='confetti' >
+        {showConfetti && <ConfettiExplosion {...{ force: 0.5, duration: 3000, particleCount: 300, width: 2000 }} />}
       </div>
       <div className='cards' >
         {cardList.map(({ img }, index) => <div key={index} className={`card ${clearedCards?.includes(index) && 'is-flipped'}`} onClick={() => handleClickOnCard(index)} >
-            <QuestionMarkIcon className='view' fontSize='large' style={{ color: '#193A81' }} />
-            <img className='view back-view' width={100} height={100} src={img} alt="" />
+          <QuestionMarkIcon className='view' fontSize='large' style={{ color: '#193A81' }} />
+          <img className='view back-view' width={100} height={100} src={img} alt="" />
         </div>)}
       </div>
     </div>
