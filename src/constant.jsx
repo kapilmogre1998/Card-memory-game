@@ -1,4 +1,4 @@
-export const uniqueCards = [
+export const UNIQUECARDS = [
     {
         type: 'cartoon1',
         img: './img1.jpg',

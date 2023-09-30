@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
-import { uniqueCards } from './constant';
+import { UNIQUECARDS } from './constant';
 import ConfettiExplosion from 'react-confetti-explosion';
+import { v4 as uuidv4 } from 'uuid';
 import './App.css'
 
 const App = () => {
@@ -58,8 +59,10 @@ const App = () => {
   }, [openCards])
 
   useEffect(() => {
-    if (uniqueCards?.length)
-      shuffleCards([...uniqueCards, ...uniqueCards])
+    if (UNIQUECARDS?.length){
+      const updatedCards = UNIQUECARDS.map((el) => ({ ...el, id: uuidv4()}))
+      shuffleCards([...updatedCards, ...updatedCards])
+    }
   }, [])
 
   return (
@@ -68,7 +71,7 @@ const App = () => {
         {showConfetti && <ConfettiExplosion {...{ force: 0.5, duration: 3000, particleCount: 300, width: 2000 }} />}
       </div>
       <div className='cards' >
-        {cardList.map(({ img }, index) => <div key={index} className={`card ${clearedCards?.includes(index) && 'is-flipped'}`} onClick={() => handleClickOnCard(index)} >
+        {cardList.map(({ img, id }, index) => <div key={id} className={`card ${clearedCards?.includes(index) && 'is-flipped'}`} onClick={() => handleClickOnCard(index)} >
           <QuestionMarkIcon className='view' fontSize='large' style={{ color: '#193A81' }} />
           <img className='view back-view' width={100} height={100} src={img} alt="" />
         </div>)}
