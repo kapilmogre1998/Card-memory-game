@@ -7,16 +7,19 @@
 body {
   min-height: 100vh;
   background-color: #6563FF;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   background-image: url('../public/bg_img.jpg');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
 }
 
-.card-container{
+.card-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+.box{
  margin: auto;
  background-color: #F8F8F8;
  border-radius: 6px;

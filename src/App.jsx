@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react'
+import { lazy, useEffect, useRef, useState } from 'react'
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
-import { UNIQUECARDS } from './constant';
-import ConfettiExplosion from 'react-confetti-explosion';
+import { CONFETTI_TIME, FLIPCARD_TIME, OPEN_MODAL_TIME, UNIQUECARDS } from './constant';
 import { v4 as uuidv4 } from 'uuid';
-import './App.css'
+import Modal from './Modal';
+import './App.css';
+
+const ConfettiExplosion = lazy(() => import('react-confetti-explosion'));
 
 const App = () => {
   const [cardList, setCardList] = useState([]);
@@ -11,44 +13,61 @@ const App = () => {
   const [clearedCards, setClearedCards] = useState([]);
   const [showConfetti, setShowConfetti] = useState(false);
   const [disableDeck, setDisableDeck] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const movesCountRef = useRef(0);
 
-  const shuffleCards = (list) => {
-    const length = list.length;
+  const shuffleCards = () => {
+    movesCountRef.current = 0;
+    let updatedCards = [...UNIQUECARDS, ...UNIQUECARDS].map((el) => ({ ...el, id: uuidv4() }));
+    const length = updatedCards.length;
     for (let i = length; i > 0; i--) {
       const randomIndex = Math.floor(Math.random() * i);
       const currentIndex = i - 1;
-      const temp = list[currentIndex];
-      list[currentIndex] = list[randomIndex];
-      list[randomIndex] = temp;
+      const temp = updatedCards[currentIndex];
+      updatedCards[currentIndex] = updatedCards[randomIndex];
+      updatedCards[randomIndex] = temp;
     }
-    setCardList(list)
+    setCardList(updatedCards)
   }
 
   const matchCards = () => {
     const [first, second] = openCards;
-    if (cardList[first].img !== cardList[second].img) {
+    let firstCard = cardList.find((el) => el?.id === first);
+    let secondCard = cardList.find(el => el?.id === second);
+    if (firstCard.img !== secondCard.img) {
       setTimeout(() => {
         setClearedCards(clearedCards?.filter((id) => {
           if (!openCards?.includes(id)) return id;
         }))
         setOpenCards([]);
         setDisableDeck(false);
-      }, 800)
+      }, FLIPCARD_TIME)
     } else {
       setDisableDeck(false);
       setOpenCards([]);
       if (clearedCards?.length === cardList?.length) {
         setTimeout(() => {
           setShowConfetti(true);
-        }, 300)
+        }, CONFETTI_TIME)
+        setTimeout(() => {
+          setShowModal(true);
+        }, OPEN_MODAL_TIME)
       }
     }
   }
 
-  const handleClickOnCard = (index) => {
-    if (openCards?.includes(index) || clearedCards?.includes(index) || disableDeck) return;
-    setOpenCards(prev => ([...prev, index]));
-    setClearedCards(prev => ([...prev, index]));
+  const handleClickOnCard = (id) => {
+    movesCountRef.current = movesCountRef?.current + 1;
+    if (openCards?.includes(id) || clearedCards?.includes(id) || disableDeck) return;
+    setOpenCards(prev => ([...prev, id]));
+    setClearedCards(prev => ([...prev, id]));
+  }
+
+  const handleRestart = () => {
+    setShowModal(false);
+    shuffleCards();
+    setClearedCards([]);
+    setShowConfetti(false);
   }
 
   useEffect(() => {
@@ -59,24 +78,28 @@ const App = () => {
   }, [openCards])
 
   useEffect(() => {
-    if (UNIQUECARDS?.length){
-      const updatedCards = UNIQUECARDS.map((el) => ({ ...el, id: uuidv4()}))
-      shuffleCards([...updatedCards, ...updatedCards])
+    if (UNIQUECARDS?.length) {
+      shuffleCards();
     }
   }, [])
 
   return (
-    <div className='card-container' >
-      <div className='confetti' >
-        {showConfetti && <ConfettiExplosion {...{ force: 0.5, duration: 3000, particleCount: 300, width: 2000 }} />}
+    <>
+      <div className='card-container' >
+        <div className='box' >
+          <div className='confetti' >
+            {showConfetti && <ConfettiExplosion {...{ force: 0.5, duration: 3000, particleCount: 300, width: 2000 }} />}
+          </div>
+          <div className='cards' >
+            {cardList.map(({ img, id }) => <div key={id} className={`card ${clearedCards?.includes(id) && 'is-flipped'}`} onClick={() => handleClickOnCard(id)} >
+              <QuestionMarkIcon className='view' fontSize='large' style={{ color: '#193A81' }} />
+              <img className='view back-view' width={100} height={100} src={img} alt="" />
+            </div>)}
+          </div>
+        </div>
       </div>
-      <div className='cards' >
-        {cardList.map(({ img, id }, index) => <div key={id} className={`card ${clearedCards?.includes(index) && 'is-flipped'}`} onClick={() => handleClickOnCard(index)} >
-          <QuestionMarkIcon className='view' fontSize='large' style={{ color: '#193A81' }} />
-          <img className='view back-view' width={100} height={100} src={img} alt="" />
-        </div>)}
-      </div>
-    </div>
+      {showModal && <Modal {...{ handleRestart }} ref={movesCountRef} />}
+    </>
   )
 }
 

@@ -25,3 +25,7 @@ export const UNIQUECARDS = [
         img: './img8.jpg'
     },
 ]
+
+export const FLIPCARD_TIME = 800;
+export const CONFETTI_TIME = 500;
+export const OPEN_MODAL_TIME = 400;
