@@ -7,7 +7,7 @@
 body {
   min-height: 100vh;
   background-color: #6563FF;
-  background-image: url('../public/bg_img.jpg');
+  background-image: url('../public/bg_img.webp');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -41,6 +41,7 @@ body {
   grid-template-rows: repeat(4, 1fr);
   gap: 1rem;
   padding: 1rem;
+  aspect-ratio: 1 / 1;
 }
 
 .card{
