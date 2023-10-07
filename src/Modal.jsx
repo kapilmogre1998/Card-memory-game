@@ -1,10 +1,10 @@
 import { forwardRef } from 'react';
 import './Modal.css';
 
-const Modal = forwardRef(function Modal ({ handleRestart }, ref) {
+const Modal = forwardRef(function Modal ({ handleRestart, display }, ref) {
     return (
-        <div className="modal-bg " >
-            <div className='modal' >
+        <div className={`modal-bg ${display ? 'open' : ''}`} >
+            <div className={`modal ${display ? 'view-transtn' : ''}`} >
                 <div className='modal-content' >
                     You completed it in <string>{ref?.current}</string> moves
                     <div className='restart-btn' >

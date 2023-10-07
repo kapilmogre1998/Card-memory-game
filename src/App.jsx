@@ -19,13 +19,9 @@ const App = () => {
   const shuffleCards = () => {
     movesCountRef.current = 0;
     let updatedCards = [...UNIQUECARDS, ...UNIQUECARDS].map((el) => ({ ...el, id: uuidv4() }));
-    const length = updatedCards.length;
-    for (let i = length; i > 0; i--) {
-      const randomIndex = Math.floor(Math.random() * i);
-      const currentIndex = i - 1;
-      const temp = updatedCards[currentIndex];
-      updatedCards[currentIndex] = updatedCards[randomIndex];
-      updatedCards[randomIndex] = temp;
+    for (let i = updatedCards.length - 1; i > 0; i--) {
+      const randomIndex = Math.floor(Math.random() * (i + 1));
+      [updatedCards[i], updatedCards[randomIndex]] = [updatedCards[randomIndex], updatedCards[i]];
     }
     setCardList(updatedCards)
   }
@@ -98,7 +94,7 @@ const App = () => {
           </div>
         </div>
       </div>
-      {showModal && <Modal {...{ handleRestart }} ref={movesCountRef} />}
+      <Modal {...{ handleRestart }} display={showModal} ref={movesCountRef} />
     </>
   )
 }
