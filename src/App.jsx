@@ -8,45 +8,50 @@ import './App.css';
 const ConfettiExplosion = lazy(() => import('react-confetti-explosion'));
 
 const App = () => {
-  const [cardList, setCardList] = useState([]);
-  const [openCards, setOpenCards] = useState([]);
-  const [clearedCards, setClearedCards] = useState([]);
-  const [showConfetti, setShowConfetti] = useState(false);
-  const [disableDeck, setDisableDeck] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const movesCountRef = useRef(0);
+  const [gameData, setGameData] = useState({
+    cardList: [],
+    openCards: [],
+    clearedCards: [],
+    showConfetti: false,
+    disableDeck: false,
+    movesCountRef: useRef(0),
+    showModal: false
+  })
+  const { cardList, openCards, clearedCards, showConfetti, disableDeck, movesCountRef, showModal } = gameData;
 
   const shuffleCards = () => {
     movesCountRef.current = 0;
     let updatedCards = [...UNIQUECARDS, ...UNIQUECARDS].map((el) => ({ ...el, id: uuidv4() }));
+    //shuffle cards
     for (let i = updatedCards.length - 1; i > 0; i--) {
       const randomIndex = Math.floor(Math.random() * (i + 1));
       [updatedCards[i], updatedCards[randomIndex]] = [updatedCards[randomIndex], updatedCards[i]];
     }
-    setCardList(updatedCards)
+    setGameData(prev => ({ ...prev, cardList: updatedCards }));
   }
 
   const matchCards = () => {
     const [first, second] = openCards;
+    //match cards
     let firstCard = cardList.find((el) => el?.id === first);
     let secondCard = cardList.find(el => el?.id === second);
     if (firstCard.img !== secondCard.img) {
       setTimeout(() => {
-        setClearedCards(clearedCards?.filter((id) => {
-          if (!openCards?.includes(id)) return id;
+        setGameData(prev => ({
+          ...prev,
+          clearedCards: clearedCards?.filter((id) => !openCards?.includes(id)),
+          openCards: [],
+          disableDeck: false
         }))
-        setOpenCards([]);
-        setDisableDeck(false);
       }, FLIPCARD_TIME)
     } else {
-      setDisableDeck(false);
-      setOpenCards([]);
+      setGameData(prev => ({ ...prev, disableDeck: false, openCards: [] }))
       if (clearedCards?.length === cardList?.length) {
         setTimeout(() => {
-          setShowConfetti(true);
+          setGameData(prev => ({ ...prev, showConfetti: true }));
         }, CONFETTI_TIME)
         setTimeout(() => {
-          setShowModal(true);
+          setGameData(prev => ({ ...prev, showModal: true }));
         }, OPEN_MODAL_TIME)
       }
     }
@@ -55,20 +60,18 @@ const App = () => {
   const handleClickOnCard = (id) => {
     movesCountRef.current = movesCountRef?.current + 1;
     if (openCards?.includes(id) || clearedCards?.includes(id) || disableDeck) return;
-    setOpenCards(prev => ([...prev, id]));
-    setClearedCards(prev => ([...prev, id]));
+    setGameData(prev => ({ ...prev, openCards: [...prev.openCards, id], clearedCards: [...prev.clearedCards, id] }));
   }
 
   const handleRestart = () => {
-    setShowModal(false);
+    setGameData(prev => ({ ...prev, showModal: false }));
     shuffleCards();
-    setClearedCards([]);
-    setShowConfetti(false);
+    setGameData(prev => ({ ...prev, clearedCards: [], showConfetti: false }));
   }
 
   useEffect(() => {
     if (openCards?.length === 2) {
-      setDisableDeck(true);
+      setGameData(prev => ({ ...prev, disableDeck: true }))
       matchCards();
     }
   }, [openCards])
