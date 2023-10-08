@@ -63,3 +63,9 @@
 .btn:hover{
     background: #2b0081df;
 }
+
+@media only screen and (max-width: 800px){
+  .modal-content{
+    width: 340px;
+  }
+  }

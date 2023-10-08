@@ -89,7 +89,7 @@ const App = () => {
           <div className='cards' >
             {cardList.map(({ img, id }) => <div key={id} className={`card ${clearedCards?.includes(id) && 'is-flipped'}`} onClick={() => handleClickOnCard(id)} >
               <QuestionMarkIcon className='view' fontSize='large' style={{ color: '#193A81' }} />
-              <img className='view back-view' width={100} height={100} src={img} alt="" />
+              <img className='view back-view' src={img} alt="" />
             </div>)}
           </div>
         </div>
