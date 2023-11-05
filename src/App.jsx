@@ -64,9 +64,8 @@ const App = () => {
   }
 
   const handleRestart = () => {
-    setGameData(prev => ({ ...prev, showModal: false }));
     shuffleCards();
-    setGameData(prev => ({ ...prev, clearedCards: [], showConfetti: false }));
+    setGameData(prev => ({ ...prev, showModal: false, clearedCards: [], showConfetti: false }));
   }
 
   useEffect(() => {
