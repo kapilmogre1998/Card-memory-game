@@ -13,7 +13,7 @@ This is a simple Memory Card Game that tests your memory skills.
 
 To play the game, click on the cards to reveal their content. Match pairs of cards with the same content to win. Try to complete the game with as few moves as possible!
 
-![Gameplay Screenshot](screenshots/gameplay.png)
+![Gameplay Screenshot](public/memory_card_game.png)
 
 ## Live Demo
 
