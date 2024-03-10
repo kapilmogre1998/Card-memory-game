@@ -6,11 +6,11 @@ This is a simple Memory Card Game that tests your memory skills.
 
 During the development of this project:
 
-1. **Code Splitting**: We implemented code-splitting techniques to optimize the loading of our application.
+1. **Code Splitting**: I implemented code-splitting techniques to optimize the loading of our application.
 
 2. **Optimizing State Management**: Refactored the application to centralize state management, creating a single source of truth for data. This architectural change streamlined our codebase and made it more maintainable.
 
-3. **Confetti Package Integration**: Installed and integrated the "Confetti" package to add a fun and celebratory visual effect when users win a game round.
+3. **Confetti Package Integration**: Installed and integrated the "Confetti" package to add a fun and celebratory visual effect when users complete a game round.
 
 ## Installation
 
